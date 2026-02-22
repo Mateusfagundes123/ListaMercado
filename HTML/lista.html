@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
+        integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
+        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="#">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.2/jspdf.debug.js"
+    integrity="sha512-rAzZtAD9aZXKAjivLBjA5+bNjWjTtGVa62S3YFxWNikNkyMcFHxRD3RK7aLYhM0sPoAuV5OaFgF0Wc8TN/R9VQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <title>Lista mercado</title>
+
+</head>
+
+<body>
+
+    <header>
+        <div>Cálculos</div>
+        <ul class="linksHeader">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="#">Criar lista</a></li>
+        </ul>
+    </header>
+
+
+   <div class="containerApp">
+
+    <section>
+        <label>Nome item</label><br>
+        <input class="ite" type="text" id="itemEntrada"><br>
+        <button onclick="salvarItem()">Salvar</button>
+    </section>
+
+    <section class="ItensLista">
+        <div class="card p-2">
+            <ul id="item" class="list-group"></ul>
+        </div>
+
+        <button class="btnPdf" onclick="gerarPdf()">Gerar Pdf</button>
+    </section>
+
+</div>
+
+</body>
+
+<script>
+
+    const itensLista = [];
+
+    function salvarItem() {
+        var item = document.getElementById('itemEntrada').value;
+        document.querySelector('#itemEntrada').value = '';
+
+        if (item != '') {
+            itensLista.push(item);
+
+            let listaHTML = '';
+
+            itensLista.forEach(function (i) {
+                listaHTML += `<li class="list-group-item">${i}</li>`;
+            });
+
+            document.querySelector('#item').innerHTML = listaHTML;
+
+
+        }
+    };
+
+    function gerarPdf() {
+        const doc = new jsPDF()
+        let y = 10; 
+
+        for(let i = 0; i < itensLista.length; i++){
+            doc.text(String(itensLista[i]), 10, y);
+            y += 10; 
+        }
+
+        doc.save('listaMercado.pdf');
+    }
+
+</script>
+
+
+
+<style>
+    * {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding-top: 60px;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.containerApp {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ItensLista {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.card {
+    width: 100%;
+}
+
+.btnPdf {
+    width: 100%;
+}
+
+header {
+    width: 100%;
+    height: 60px;
+    background-color: black;
+    color: aliceblue;
+    position: fixed;
+    top: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+}
+
+.linksHeader {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.linksHeader a {
+    color: aliceblue;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.linksHeader a:hover {
+    text-decoration: underline;
+}
+</style>
+
+</html>
