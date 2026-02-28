@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" type="image/png" href="../IMG/carrinho-de-compras.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
@@ -14,8 +15,8 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="icon" type="image/png" href="#">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.2/jspdf.debug.js"
-    integrity="sha512-rAzZtAD9aZXKAjivLBjA5+bNjWjTtGVa62S3YFxWNikNkyMcFHxRD3RK7aLYhM0sPoAuV5OaFgF0Wc8TN/R9VQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        integrity="sha512-rAzZtAD9aZXKAjivLBjA5+bNjWjTtGVa62S3YFxWNikNkyMcFHxRD3RK7aLYhM0sPoAuV5OaFgF0Wc8TN/R9VQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <title>Lista mercado</title>
 
@@ -32,23 +33,23 @@
     </header>
 
 
-   <div class="containerApp">
+    <div class="containerApp">
 
-    <section>
-        <label>Nome item</label><br>
-        <input class="ite" type="text" id="itemEntrada"><br>
-        <button onclick="salvarItem()">Salvar</button>
-    </section>
+        <section>
+            <label class="textNomeItem">Nome item</label><br>
+            <input class="textItem" type="text" id="itemEntrada"><br>
+            <button class="textBotaoSalvar" onclick="salvarItem()">Salvar</button>
+        </section>
 
-    <section class="ItensLista">
-        <div class="card p-2">
-            <ul id="item" class="list-group"></ul>
-        </div>
+        <section class="ItensLista">
+            <div class="card p-2">
+                <ul id="item" class="list-group"></ul>
+            </div>
 
-        <button class="btnPdf" onclick="gerarPdf()">Gerar Pdf</button>
-    </section>
+            <button class="btnPdf" onclick="gerarPdf()">Gerar Pdf</button>
+        </section>
 
-</div>
+    </div>
 
 </body>
 
@@ -57,34 +58,47 @@
     const itensLista = [];
 
     function salvarItem() {
-        var item = document.getElementById('itemEntrada').value;
+        var item = document.getElementById('itemEntrada').value.trim();
         document.querySelector('#itemEntrada').value = '';
 
         if (item != '') {
             itensLista.push(item);
-
-            let listaHTML = '';
-
-            itensLista.forEach(function (i) {
-                listaHTML += `<li class="list-group-item">${i}</li>`;
-            });
-
-            document.querySelector('#item').innerHTML = listaHTML;
-
-
+            renderizarLista();
         }
     };
 
+            function excluirItem(index) {
+                itensLista.splice(index, 1);
+                renderizarLista();
+            }
+
     function gerarPdf() {
         const doc = new jsPDF()
-        let y = 10; 
+        let y = 10;
 
-        for(let i = 0; i < itensLista.length; i++){
+        for (let i = 0; i < itensLista.length; i++) {
             doc.text(String(itensLista[i]), 10, y);
-            y += 10; 
+            y += 10;
         }
 
         doc.save('listaMercado.pdf');
+    }
+
+    function renderizarLista() {
+        let listaHTML = '';
+
+        itensLista.forEach(function (item, index) {
+            listaHTML += `
+            <li class="list-group-item d-flex justify-content-between">
+                ${item}
+                <div>
+                    <button class="botaoExluir" onclick="excluirItem(${index})">Excluir</button>
+                </div>
+            </li>
+        `;
+        });
+
+        document.querySelector('#item').innerHTML = listaHTML;
     }
 
 </script>
@@ -92,77 +106,109 @@
 
 
 <style>
+    .textNomeItem {
+        font-size: 25px;
+        text-transform: uppercase;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    .textItem {
+        border-radius: 10px;
+        width: 250px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .textBotaoSalvar {
+        margin-top: 10px;
+        border-radius: 10px;
+        width: 100px;
+        height: 40px;
+    }
+
+    .btnPdf {
+        border-radius: 10px;
+    }
+
+    .botaoExluir{
+        border-radius: 10px;
+    }
+
+
+
     * {
-    box-sizing: border-box;
-}
+        box-sizing: border-box;
+    }
 
-body {
-    margin: 0;
-    padding-top: 60px;
-    min-height: 100vh;
+    body {
+        margin: 0;
+        padding-top: 60px;
+        min-height: 100vh;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
 
-.containerApp {
-    width: 100%;
-    max-width: 500px;
-    padding: 20px;
+    .containerApp {
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
 
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        background-color: rgb(230, 230, 230);
+        border-radius: 15px;
+    }
 
-.ItensLista {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-}
+    .ItensLista {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
 
-.card {
-    width: 100%;
-}
+    .card {
+        width: 100%;
+    }
 
-.btnPdf {
-    width: 100%;
-}
+    .btnPdf {
+        width: 100%;
+    }
 
-header {
-    width: 100%;
-    height: 60px;
-    background-color: black;
-    color: aliceblue;
-    position: fixed;
-    top: 0;
+    header {
+        width: 100%;
+        height: 60px;
+        background-color: black;
+        color: aliceblue;
+        position: fixed;
+        top: 0;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
-}
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+    }
 
-.linksHeader {
-    display: flex;
-    gap: 20px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
+    .linksHeader {
+        display: flex;
+        gap: 20px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
 
-.linksHeader a {
-    color: aliceblue;
-    text-decoration: none;
-    font-weight: 500;
-}
+    .linksHeader a {
+        color: aliceblue;
+        text-decoration: none;
+        font-weight: 500;
+    }
 
-.linksHeader a:hover {
-    text-decoration: underline;
-}
+    .linksHeader a:hover {
+        text-decoration: underline;
+    }
 </style>
 
 </html>
